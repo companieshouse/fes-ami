@@ -1,0 +1,7 @@
+---
+
+non-fes-apps:
+  - java-1.8.0-openjdk
+  - tomcat
+  - tomcat-webapps
+  - tomcat-admin-webapps

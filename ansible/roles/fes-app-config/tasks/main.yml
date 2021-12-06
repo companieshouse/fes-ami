@@ -1,0 +1,103 @@
+---
+- name: Download app library archive from s3
+  aws_s3:
+    bucket: '{{ s3_bucket }}'
+    object: '{{ s3_file_perl_lib }}'
+    dest: "/tmp/{{ s3_file_perl_lib_name }}"
+    mode: get
+
+- name: Unarchive app library download
+  unarchive:
+    src: "/tmp/{{ s3_file_perl_lib_name }}"
+    dest: /tmp/
+    remote_src: yes
+
+- name: Install non-FES apps
+  yum: name={{ item }} state=present update_cache=yes
+    with_items: "{{ non-fes-apps }}"
+
+
+- name: Copy config templates to relevant locations
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
+  copy:
+    src: "{{ item }}"
+    dest: "/{{ item }}"
+    mode: 0755
+  loop:
+    - etc/httpd/conf/httpd.conf.j2
+    - etc/httpd/conf/ewf_startup.pl
+    - etc/httpd/conf.d/ewf_perl.conf.j2
+
+- name: Create falsemnt directory in EWF home
+  file:
+    path: /home/ewf/falsemnt
+    state: directory
+    owner: ewf
+    group: chlservices
+    mode: 0755
+
+- name: Create additional falsemnt directories in EWF home
+  file:
+    path: "/home/ewf/falsemnt/{{ item }}"
+    state: directory
+    owner: ewf
+    group: chlservices
+    mode: 0755
+  with_items:
+    - "image"
+    - "email"
+
+- name: Update Postfix configuration for mail relay (existing commented lines)
+  lineinfile:
+    dest: "/etc/postfix/{{ postfix_main_config_file }}"
+    line: "{{ item.key }} = {{ item.value }}"
+    regexp: "^#{{ item.key }} ="
+    insertafter: "^#{{ item.key }} ="
+  with_items: "{{ postfix_config }}"
+
+- name: Update Postfix network config (existing uncommented lines)
+  lineinfile:
+    dest: "/etc/postfix/{{ postfix_main_config_file }}"
+    line: "{{ item.key }} = {{ item.value }}"
+    regexp: "^{{ item.key }} ="
+  with_items: "{{ postfix_net_config }}"
+
+- name: Enable crontab for FES user
+  lineinfile:
+    dest: "/etc/cron.allow"
+    line: "fes"
+    regexp: "^fes"
+
+- name: Allow fes to use apachectl 
+  copy:
+    dest: "/etc/sudoers.d/fes"
+    content: |
+      # FES user
+      fes ALL=(ALL) NOPASSWD:/usr/sbin/apachectl
+
+- name: Copy deployment scripts to server for later use
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ansible_deploy_playbook_directory }}/{{ item | basename }}"
+    mode: 0755
+  loop:
+    - deployment-scripts/frontend_deployment.yml
+    - deployment-scripts/backend_deployment.yml
+
+- name: Setup deployment playbook dependancies (1/2)
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6  
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ansible_deploy_playbook_directory }}/"
+    mode: 0755
+  loop: 
+    - requirements.yml
+
+- name: Setup deployment playbook dependancies (2/2)
+  command: "/usr/local/bin/ansible-galaxy install -f -r {{ansible_deploy_playbook_directory}}/requirements.yml"
+  register: requirements_output
+  changed_when: '"was installed successfully" in requirements_output.stdout'

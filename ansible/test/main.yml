@@ -1,0 +1,26 @@
+---
+- name: Deploy Centos6.10 Container
+  hosts: localhost
+  gather_facts: false
+  vars:
+    inventory:
+      - name: ewf-frontend
+        image: "centos:centos6.10"
+        # The network setting allows for idempotent testing.
+        # without it the role creates a brand new container, with it the container is re-used.
+        network_mode: bridge
+        provision_docker_volumes: 
+          - /lib/modules:/lib/modules   
+  roles:
+    - role: provision_docker
+      provision_docker_inventory: "{{ inventory }}"
+      provision_docker_privileged: True
+
+- hosts: ewf-frontend
+  become: true 
+  collections:
+    - ch_collections.enterpriselinux6
+  roles:
+    - centos6_base_repo #ch_collections.enterpriselinux6
+- import_playbook: ../playbook.yml
+

@@ -1,0 +1,103 @@
+---
+  - name: Deploy EWF Backend artifact
+    hosts: localhost
+    gather_facts: true
+    collections:
+      - ch_collections.base
+    vars:
+      ansible_python_interpreter: /usr/local/bin/python3.6
+      application_name: "ewf-backend"
+      home_dir: "/home/ewf"
+      directories:
+        - "DATA"
+        - "MODULES"
+        - "bcdbackend"
+        - "chd3backend"
+        - "efbackend"
+        - "conf"
+        - "supportscripts"
+      config_files:
+        - "BEP"
+        - "EWF"
+        - "COM"
+    roles:
+      - { role: /root/roles/nfs_mounts }
+      - name: ch_collections.base.cloudwatch_agent_config
+        when: cw_log_files is defined
+    tasks:
+      - name: Download the versioned release artifact from S3
+        aws_s3:
+          bucket: "{{ s3_bucket_releases }}"
+          object: "chl-perl/{{ application_name }}/{{ application_name }}-{{ version }}.zip"
+          dest: "/tmp/{{ application_name }}-{{ version }}.zip"
+          mode: get
+
+      - name: Create temporary app folder for unzip
+        file:
+          path: "/tmp/{{ application_name }}-{{ version }}"
+          state: directory
+
+      - name: Unarchive the artifact into its own folder
+        unarchive:
+          remote_src: yes
+          src: "/tmp/{{ application_name }}-{{ version }}.zip"
+          dest: "/tmp/{{ application_name }}-{{ version }}"
+
+      - name: Copy app directories to app user home
+        vars:
+          ansible_python_interpreter: /usr/bin/python2.6
+        copy:
+          src: "/tmp/{{ application_name }}-{{ version }}/{{ item }}"
+          dest: "{{ home_dir }}/"
+          owner: "{{ home_dir | basename }}"
+          group: chlservices
+          mode: preserve
+          remote_src: yes
+        loop: "{{ directories }}"
+
+      - name: Make sure config directory exists
+        file:
+          path: "{{ home_dir }}/config/My"
+          owner: "{{ home_dir | basename }}"
+          group: chlservices
+          state: directory
+          recurse: yes
+          mode: '755'
+
+      - name: Symlinking "My::" to modules
+        ansible.builtin.file:
+          src: "{{ home_dir }}/config/My"
+          path: "{{ home_dir }}/MODULES/My"
+          owner: "{{ home_dir | basename }}"
+          group: chlservices
+          state: link
+
+      - name: Download environment config files from S3
+        aws_s3:
+          bucket: "{{ s3_bucket_configs }}"
+          object: "chl-{{ application_name }}-configs/{{ heritage_environment }}/{{ item | upper }}Config.pm"
+          dest: "{{ home_dir }}/config/My/{{ item | upper }}Config.pm"
+          mode: get
+        loop: "{{ config_files }}"
+
+      - name: Change config owners and permissions
+        ansible.builtin.file:
+          path: "{{ home_dir }}/config/My/{{ item | upper }}Config.pm"
+          owner: "{{ home_dir | basename }}"
+          group: chlservices
+          mode: '755'
+        loop: "{{ config_files }}"
+
+      - name: Cleanup install files
+        file:
+          path: "{{ item }}"
+          state: absent
+        with_items:
+          - "/tmp/{{ application_name }}-{{ version }}"
+          - "/tmp/{{ application_name }}-{{ version }}.zip"
+
+      - name: Make sure Apache is disabled and stopped
+        service:
+          name: "httpd"
+          state: stopped
+          enabled: no

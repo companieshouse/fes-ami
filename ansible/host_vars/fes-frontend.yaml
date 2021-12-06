@@ -19,6 +19,7 @@ app_user_home_path: /home/fes
 
 install_watcher_service: true
 
+
 # Custom env vars to append to role defaults (heritage_frontend_base)
 # Any env vars that have matching keys (names) will override the default
 # e.g. in the below LC_ALL will override the default in the role

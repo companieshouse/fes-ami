@@ -1,6 +1,6 @@
-# Ansible Role: ewf-app-config
+# Ansible Role: fes-app-config
 
-Configure tasks specific to EWF:
+Configure tasks specific to FES:
 
 http modules:
 mod_cookietrack.so

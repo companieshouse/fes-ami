@@ -26,22 +26,22 @@
     mode: 0755
   loop:
     - etc/httpd/conf/httpd.conf.j2
-    - etc/httpd/conf/ewf_startup.pl
-    - etc/httpd/conf.d/ewf_perl.conf.j2
+    - etc/httpd/conf/fes_startup.pl
+    - etc/httpd/conf.d/fes_perl.conf.j2
 
-- name: Create falsemnt directory in EWF home
+- name: Create falsemnt directory in FES home
   file:
-    path: /home/ewf/falsemnt
+    path: /home/fes/falsemnt
     state: directory
-    owner: ewf
+    owner: fes
     group: chlservices
     mode: 0755
 
-- name: Create additional falsemnt directories in EWF home
+- name: Create additional falsemnt directories in FES home
   file:
-    path: "/home/ewf/falsemnt/{{ item }}"
+    path: "/home/fes/falsemnt/{{ item }}"
     state: directory
-    owner: ewf
+    owner: fes
     group: chlservices
     mode: 0755
   with_items:

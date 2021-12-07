@@ -1,6 +1,6 @@
 ---
 s3_bucket: ""
-s3_file_perl_lib: /application/ewf/frontend/ewf-frontend-static.tar.gz
+s3_file_perl_lib: /application/fes/frontend/fes-frontend-static.tar.gz
 s3_file_perl_lib_name: '{{ s3_file_perl_lib | basename }}'
 
 tar_files:

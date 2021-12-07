@@ -1,13 +1,13 @@
 ---
-  - name: Deploy EWF Backend artifact
+  - name: Deploy FES Backend artifact
     hosts: localhost
     gather_facts: true
     collections:
       - ch_collections.base
     vars:
       ansible_python_interpreter: /usr/local/bin/python3.6
-      application_name: "ewf-backend"
-      home_dir: "/home/ewf"
+      application_name: "fes-backend"
+      home_dir: "/home/fes"
       directories:
         - "DATA"
         - "MODULES"
@@ -18,7 +18,7 @@
         - "supportscripts"
       config_files:
         - "BEP"
-        - "EWF"
+        - "FES"
         - "COM"
     roles:
       - { role: /root/roles/nfs_mounts }

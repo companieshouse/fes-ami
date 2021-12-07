@@ -1,4 +1,4 @@
-# EWF AMI testing
+# FES AMI testing
 
 A simple docker setup to cover testing of Ansible.
 

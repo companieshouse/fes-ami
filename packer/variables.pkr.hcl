@@ -5,13 +5,13 @@ variable "ami_account_ids" {
 
 variable "ami_name_prefix" {
   type        = string
-  default     = "ewf-frontend"
+  default     = "fes-frontend"
   description = "The prefix string that will be used for the name tags of the resulting AMI and snapshot(s); the version string will be appended automatically"
 }
 
 variable "ansible_host_alias" {
   type        = string
-  default     = "ewf-frontend"
+  default     = "fes-frontend"
   description = "The Ansible host alias"
 }
 

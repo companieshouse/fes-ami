@@ -13,6 +13,8 @@
     remote_src: yes
 
 - name: Install non-FES apps
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
   yum:
     name: 
       - java-1.8.0-openjdk

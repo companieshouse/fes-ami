@@ -19,7 +19,7 @@
       - tomcat
       - tomcat-webapps
       - tomcat-admin-webapps
-     state: present
+    state: present
 
 - name: Copy config templates to relevant locations
   vars:

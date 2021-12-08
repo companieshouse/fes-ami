@@ -19,8 +19,16 @@
     name: 
       - java-1.8.0-openjdk
       - tomcat
-      - tomcat-webapps
       - tomcat-admin-webapps
+    state: present
+
+- name: Install tomcat-webapps
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
+  yum:
+    name:
+      - tomcat-webapps
+    skip-broken: yes
     state: present
 
 - name: Copy config templates to relevant locations

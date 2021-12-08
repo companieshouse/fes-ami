@@ -22,45 +22,14 @@
       - tomcat-admin-webapps
     state: present
 
-- name: Install tomcat-webapps
-  vars:
-    ansible_python_interpreter: /usr/bin/python2.6
-  yum:
-    name:
-      - tomcat-webapps
-    skip-broken: yes
-    state: present
-
-- name: Copy config templates to relevant locations
-  vars:
-    ansible_python_interpreter: /usr/bin/python2.6
-  copy:
-    src: "{{ item }}"
-    dest: "/{{ item }}"
-    mode: 0755
-  loop:
-    - etc/httpd/conf/httpd.conf.j2
-    - etc/httpd/conf/fes_startup.pl
-    - etc/httpd/conf.d/fes_perl.conf.j2
-
-- name: Create falsemnt directory in FES home
-  file:
-    path: /home/fes/falsemnt
-    state: directory
-    owner: fes
-    group: chlservices
-    mode: 0755
-
-- name: Create additional falsemnt directories in FES home
-  file:
-    path: "/home/fes/falsemnt/{{ item }}"
-    state: directory
-    owner: fes
-    group: chlservices
-    mode: 0755
-  with_items:
-    - "image"
-    - "email"
+#- name: Install tomcat-webapps
+#  vars:
+#    ansible_python_interpreter: /usr/bin/python2.6
+#  yum:
+#    name:
+#      - tomcat-webapps
+#    skip-broken: yes
+#    state: present
 
 - name: Update Postfix configuration for mail relay (existing commented lines)
   lineinfile:
@@ -83,13 +52,6 @@
     line: "fes"
     regexp: "^fes"
 
-- name: Allow fes to use apachectl 
-  copy:
-    dest: "/etc/sudoers.d/fes"
-    content: |
-      # FES user
-      fes ALL=(ALL) NOPASSWD:/usr/sbin/apachectl
-
 - name: Copy deployment scripts to server for later use
   vars:
     ansible_python_interpreter: /usr/bin/python2.6
@@ -99,7 +61,6 @@
     mode: 0755
   loop:
     - deployment-scripts/frontend_deployment.yml
-    - deployment-scripts/backend_deployment.yml
 
 - name: Setup deployment playbook dependancies (1/2)
   vars:

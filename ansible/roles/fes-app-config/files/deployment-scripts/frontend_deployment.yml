@@ -30,24 +30,6 @@
           path: "/tmp/{{ application_name }}-{{ version }}"
           state: directory
 
-      - name: Unarchive the artifact into its own folder
-        unarchive:
-          remote_src: yes
-          src: "/tmp/{{ application_name }}-{{ version }}.zip"
-          dest: "/tmp/{{ application_name }}-{{ version }}"
-
-      - name: Copy app directories to app user home
-        vars:
-          ansible_python_interpreter: /usr/bin/python2.6
-        copy:
-          src: "/tmp/{{ application_name }}-{{ version }}/{{ item }}"
-          dest: "{{ home_dir }}/"
-          mode: '0755'
-          owner: "{{ home_dir | basename }}"
-          group: chlservices
-          remote_src: yes
-        loop: "{{ directories }}"
-
       - name: Make sure config directory exists
         file:
           path: "{{ home_dir }}/config/My"
@@ -70,33 +52,4 @@
           group: chlservices
           mode: '0755'
         loop: "{{ config_files }}"
-
-      - name: Create Matomo templates
-        command: perl -I {{ home_dir }}/config/ {{ home_dir }}/htdocs/efiling/templates/tracker.pl
-        args:
-          creates: "{{ home_dir }}/htdocs/efiling/templates/tracker.pl"
-
-      - name: Cleanup install files
-        file:
-          path: "{{ item }}"
-          state: absent
-        with_items:
-          - "/tmp/{{ application_name }}-{{ version }}"
-          - "/tmp/{{ application_name }}-{{ version }}.zip"
-
-      - name: Ensure apache config files are all owned and permissions are set correctly
-        ansible.builtin.file:
-          path: "{{ item }}"
-          owner: "{{ home_dir | basename }}"
-          group: chlservices
-          mode: '0644'
-        loop:
-          - /etc/httpd/conf/httpd.conf
-          - /etc/httpd/conf/fes_startup.pl
-          - /etc/httpd/conf.d/fes_perl.conf
-
-      - name: Make sure Apache is started
-        service:
-          name: "httpd"
-          state: restarted
-          enabled: yes
+        

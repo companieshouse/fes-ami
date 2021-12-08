@@ -11,11 +11,11 @@ users:
 
 app_user_home_path: /home/fes
 
-#s3_file_perl_lib: /application/shared/libraries/perl-xerces-lib.tar.gz
-#s3_file_perl_lib_name: '{{ s3_file_perl_lib | basename }}'
+s3_file_perl_lib: /application/shared/libraries/perl-xerces-lib.tar.gz
+s3_file_perl_lib_name: '{{ s3_file_perl_lib | basename }}'
 
-#tar_files:
-#  - "{{ s3_file_perl_lib_name }}"
+tar_files:
+  - "{{ s3_file_perl_lib_name }}"
 
 install_watcher_service: true
 

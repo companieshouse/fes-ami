@@ -13,9 +13,13 @@
     remote_src: yes
 
 - name: Install non-FES apps
-  yum: name={{ item }} state=present update_cache=yes
-    with_items: "{{ non-fes-apps }}"
-
+  yum:
+    name: 
+      - java-1.8.0-openjdk
+      - tomcat
+      - tomcat-webapps
+      - tomcat-admin-webapps
+     state: present
 
 - name: Copy config templates to relevant locations
   vars:

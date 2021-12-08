@@ -18,6 +18,7 @@
   yum:
     name: 
       - java-1.8.0-openjdk
+      - jakarta-taglibs-standard
       - tomcat
       - tomcat-webapps
       - tomcat-admin-webapps

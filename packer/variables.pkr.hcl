@@ -35,7 +35,7 @@ variable "aws_source_ami_filter_name" {
 
 variable "aws_source_ami_filter_version" {
   type        = string
-  default     = "0.1.5"
+  default     = "*"
   description = "The source AMI filter version. Used to enable control of version of source AMI from CI triggers."
 }
 
@@ -81,6 +81,7 @@ variable "ssh_username" {
 
 variable "version" {
   type        = string
+  default     = "0.1.5"
   description = "The semantic version number for the AMI; the version string will be appended automatically to the name tags added to the resulting AMI and snapshot(s)"
 }
 

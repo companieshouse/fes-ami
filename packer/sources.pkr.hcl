@@ -10,6 +10,7 @@ source "amazon-ebs" "builder" {
   iam_instance_profile = "packer-builders-${var.aws_region}"
   encrypt_boot         = var.encrypt_boot
   kms_key_id           = var.kms_key_id
+  ena_support          = true
 
   launch_block_device_mappings {
     device_name = "/dev/sda1"
@@ -27,7 +28,7 @@ source "amazon-ebs" "builder" {
   source_ami_filter {
     filters = {
       virtualization-type = "hvm"
-      name =  "${var.aws_source_ami_filter_name}"
+      name =  "${var.aws_source_ami_filter_name}-${var.aws_source_ami_filter_version}"
       root-device-type = "ebs"
     }
     owners = ["${var.aws_source_ami_owner_id}"]

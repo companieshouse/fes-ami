@@ -10,7 +10,7 @@ source "amazon-ebs" "builder" {
   iam_instance_profile = "packer-builders-${var.aws_region}"
   encrypt_boot         = var.encrypt_boot
   kms_key_id           = var.kms_key_id
-  #ena_support          = true
+  ena_support          = true
 
   launch_block_device_mappings {
     device_name = "/dev/sda1"

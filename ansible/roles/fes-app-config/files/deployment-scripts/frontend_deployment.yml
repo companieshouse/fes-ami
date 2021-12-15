@@ -12,7 +12,7 @@
         - "data"
         - "supportscripts"
       config_files:
-        - "FES.properties"
+        - "FES"
     roles:
       - { role: /root/roles/nfs_mounts }
       - name: ch_collections.base.cloudwatch_agent_config
@@ -40,14 +40,14 @@
       - name: Download environment config files from S3
         aws_s3:
           bucket: "{{ s3_bucket_configs }}"
-          object: "chl-{{ application_name }}-configs/{{ heritage_environment }}/{{ item | upper }}Config.pm"
-          dest: "{{ home_dir }}/config/My/{{ item | upper }}Config.pm"
+          object: "chl-{{ application_name }}-configs/{{ heritage_environment }}/{{ item | upper }}.properties"
+          dest: "{{ home_dir }}/config/My/{{ item | upper }}.properties"
           mode: get
         loop: "{{ config_files }}"
 
       - name: Change config owners and permission
         ansible.builtin.file:
-          path: "{{ home_dir }}/config/My/{{ item | upper }}Config.pm"
+          path: "{{ home_dir }}/config/My/{{ item | upper }}.properties"
           owner: "{{ home_dir | basename }}"
           group: chlservices
           mode: '0755'

@@ -17,7 +17,7 @@ s3_file_perl_lib_name: '{{ s3_file_perl_lib | basename }}'
 tar_files:
   - "{{ s3_file_perl_lib_name }}"
 
-install_watcher_service: true
+install_watcher_service: false
 
 
 # Custom env vars to append to role defaults (heritage_frontend_base)

@@ -13,8 +13,6 @@
     remote_src: yes
 
 - name: Install non-FES apps
-  vars:
-    ansible_python_interpreter: /usr/bin/python2.6
   yum:
     name: 
       - java-1.8.0-openjdk
@@ -23,8 +21,6 @@
     state: present
 
 #- name: Install tomcat-webapps
-#  vars:
-#    ansible_python_interpreter: /usr/bin/python2.6
 #  yum:
 #    name:
 #      - tomcat-webapps
@@ -53,8 +49,6 @@
     regexp: "^fes"
 
 - name: Copy deployment scripts to server for later use
-  vars:
-    ansible_python_interpreter: /usr/bin/python2.6
   copy:
     src: "{{ item }}"
     dest: "{{ ansible_deploy_playbook_directory }}/{{ item | basename }}"
@@ -63,8 +57,6 @@
     - deployment-scripts/frontend_deployment.yml
 
 - name: Setup deployment playbook dependancies (1/2)
-  vars:
-    ansible_python_interpreter: /usr/bin/python2.6  
   copy:
     src: "{{ item }}"
     dest: "{{ ansible_deploy_playbook_directory }}/"

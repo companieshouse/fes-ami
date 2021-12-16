@@ -4,48 +4,59 @@
     name: ['boto', 'boto3', 'botocore']
     umask: "0022"
 
-- name: Download app library archive from s3
-  aws_s3:
-    bucket: '{{ s3_bucket }}'
-    object: '{{ s3_file_perl_lib }}'
-    dest: "/tmp/{{ s3_file_perl_lib_name }}"
-    mode: get
+- name: Create users
+  ansible.builtin.user:
+    name: "{{ item }}"
+    group: "{{ item }}"
+  state: present
+  loop:
+    - tomcat
+    - fes
 
-- name: Unarchive app library download
-  unarchive:
-    src: "/tmp/{{ s3_file_perl_lib_name }}"
-    dest: /tmp/
-    remote_src: yes
-
-- name: Install non-FES apps
+- name: Install FES dependancies
   yum:
-    name: 
-      - java-1.8.0-openjdk
-      - tomcat
-      - tomcat-admin-webapps
+    name: "{{ item }}"
     state: present
+  loop: 
+    - "java-1.8.0-openjdk"
 
-#- name: Install tomcat-webapps
-#  yum:
-#    name:
-#      - tomcat-webapps
-#    skip-broken: yes
-#    state: present
+- name: Download tomcat
+  ansible.builtin.get_url: 
+    url: https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split(".")[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz
+    dest: "/tmp"
 
-- name: Update Postfix configuration for mail relay (existing commented lines)
-  lineinfile:
-    dest: "/etc/postfix/{{ postfix_main_config_file }}"
-    line: "{{ item.key }} = {{ item.value }}"
-    regexp: "^#{{ item.key }} ="
-    insertafter: "^#{{ item.key }} ="
-  with_items: "{{ postfix_config }}"
+- name: Unarchive tomcat
+  ansible.builtin.unarchive:
+    src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    dest: "{{ tomcat_path }}tomcat-{{ tomcat_version }}"
+    remote_src: yes
+    owner: tomcat
+    group: tomcat
 
-- name: Update Postfix network config (existing uncommented lines)
-  lineinfile:
-    dest: "/etc/postfix/{{ postfix_main_config_file }}"
-    line: "{{ item.key }} = {{ item.value }}"
-    regexp: "^{{ item.key }} ="
-  with_items: "{{ postfix_net_config }}"
+- name: Create Symlinks
+  ansible.builtin.file:
+    src: "{{ tomcat_install_path }}/tomcat{{ tomcat_version }}"
+    dest: "{{ tomcat_install_path }}/tomcat{{ item }}"
+    state: link
+    owner: tomcat
+    group: tomcat
+  loop: 
+    - ""
+    - "-latest"
+    - "{{ tomcat_version.split(".")[0] }}"
+
+- name: Template service file
+  ansible.builtin.template:
+    src: templates/{{ service_manager }}.j2
+    dest: "/etc/systemd/system/tomcat.service"
+    owner: root
+    group: root
+    mode: "{{ service_file_mode }}"
+
+- name: Ensure service is disabled
+  ansible.builtin.service:
+    name: tomcat.service
+    enabled: no
 
 - name: Enable crontab for FES user
   lineinfile:

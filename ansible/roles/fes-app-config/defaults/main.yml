@@ -1,24 +1,15 @@
 ---
 s3_bucket: ""
-s3_file_perl_lib: /application/fes/frontend/fes-frontend-static.tar.gz
-s3_file_perl_lib_name: '{{ s3_file_perl_lib | basename }}'
-
-tar_files:
-  - "{{ s3_file_perl_lib_name }}"
 
 ansible_deploy_playbook_directory: "/root"
 
-postfix_main_config_file: main.cf
-postfix_config:
-  - key: mydomain
-    value: default.local
-  - key: myorigin 
-    value: $mydomain
-  - key: relayhost
-    value: myrelay.local
+tomcat_version: "9.0.56"
+tomcat_path: "/usr/local/bin/"
 
-postfix_net_config:
-  - key: inet_interfaces 
-    value: all
-  - key: inet_protocols 
-    value: ipv4
+tomcat_environment: 
+  - "JAVA_HOME=/usr/lib/jvm/jre"
+  - "JAVA_OPTS=-Djava.security.egd=file:///dev/urandom"
+  - "CATALINA_BASE=/opt/tomcat/latest"
+  - "CATALINA_HOME=/opt/tomcat/latest"
+  - "CATALINA_PID=/opt/tomcat/latest/temp/tomcat.pid"
+  - "CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC" #Set this for actual memory

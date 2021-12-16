@@ -1,24 +1,10 @@
 ---
-
-selinux_status:
-  - policy: targeted
-    state: permissive
-
 users:
   - name: fes
     group: chlservices
     gid: 600
 
 app_user_home_path: /home/fes
-
-s3_file_perl_lib: /application/shared/libraries/perl-xerces-lib.tar.gz
-s3_file_perl_lib_name: '{{ s3_file_perl_lib | basename }}'
-
-tar_files:
-  - "{{ s3_file_perl_lib_name }}"
-
-install_watcher_service: false
-
 
 # Custom env vars to append to role defaults (heritage_frontend_base)
 # Any env vars that have matching keys (names) will override the default
@@ -27,21 +13,6 @@ custom_env_vars:
     LC_ALL: export LC_ALL='en_GB.UTF-8'
     NLS_LANG: export NLS_LANG='ENGLISH_UNITED KINGDOM.UTF8'
   
-postfix_main_config_file: main.cf
-postfix_config:
-  - key: mydomain
-    value: companieshouse.gov.uk
-  - key: myorigin
-    value: $mydomain
-  - key: relayhost
-    value: smtp-outbound.sharedservices.aws.internal
-
-postfix_net_config:
-  - key: inet_interfaces
-    value: all
-  - key: inet_protocols
-    value: ipv4
-
 ## Nagios Variables
 auto_register_client: true
 nagios_host: nagios.sharedservices.aws.internal

@@ -8,7 +8,7 @@
   ansible.builtin.user:
     name: "{{ item }}"
     group: "{{ item }}"
-  state: present
+    state: present
   loop:
     - tomcat
     - fes
@@ -22,7 +22,7 @@
 
 - name: Download tomcat
   ansible.builtin.get_url: 
-    url: https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split(".")[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz
+    url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
     dest: "/tmp"
 
 - name: Unarchive tomcat
@@ -43,7 +43,7 @@
   loop: 
     - ""
     - "-latest"
-    - "{{ tomcat_version.split(".")[0] }}"
+    - "{{ tomcat_version.split('.')[0] }}"
 
 - name: Template service file
   ansible.builtin.template:

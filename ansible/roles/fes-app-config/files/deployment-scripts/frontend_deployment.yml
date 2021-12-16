@@ -18,12 +18,12 @@
       - name: ch_collections.base.cloudwatch_agent_config
         when: cw_log_files is defined
     tasks:
-      - name: Download the versioned release artifact from S3
-        aws_s3:
-          bucket: "{{ s3_bucket_releases }}"
-          object: "chl-perl/{{ application_name }}/{{ application_name }}-{{ version }}.zip"
-          dest: "/tmp/{{ application_name }}-{{ version }}.zip"
-          mode: get
+   #   - name: Download the versioned release artifact from S3
+   #     aws_s3:
+   #       bucket: "{{ s3_bucket_releases }}"
+   #       object: "chl-perl/{{ application_name }}/{{ application_name }}-{{ version }}.zip"
+   #       dest: "/tmp/{{ application_name }}-{{ version }}.zip"
+   #       mode: get
 
       - name: Create temporary app folder for unzip
         file:

@@ -8,7 +8,7 @@ Type=forking
 User=tomcat
 Group=tomcat
 
-{% for value in tomcat_environment.items() -%}
+{% for value in tomcat_environment -%}
 Environment="{{ value }}"
 {% endfor -%}
 

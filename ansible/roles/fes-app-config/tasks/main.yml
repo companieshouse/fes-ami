@@ -12,12 +12,13 @@
     - tomcat
     - fes
 
-- name: Install FES dependancies
+- name: Install dependancies
   yum:
     name: "{{ item }}"
     state: present
   loop: 
     - "java-1.8.0-openjdk"
+    - "tar"
 
 - name: Download tomcat
   ansible.builtin.get_url: 
@@ -27,15 +28,15 @@
 - name: Unarchive tomcat
   ansible.builtin.unarchive:
     src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
-    dest: "{{ tomcat_path }}tomcat-{{ tomcat_version }}"
+    dest: "{{ tomcat_path }}"
     remote_src: yes
     owner: tomcat
     group: tomcat
 
 - name: Create Symlinks
   ansible.builtin.file:
-    src: "{{ tomcat_install_path }}/tomcat{{ tomcat_version }}"
-    dest: "{{ tomcat_install_path }}/tomcat{{ item }}"
+    src: "{{ tomcat_path }}apache-tomcat-{{ tomcat_version }}"
+    dest: "{{ tomcat_path }}tomcat{{ item }}"
     state: link
     owner: tomcat
     group: tomcat
@@ -43,25 +44,20 @@
     - ""
     - "-latest"
     - "{{ tomcat_version.split('.')[0] }}"
+    - "-{{ tomcat_version }}"
 
 - name: Template service file
   ansible.builtin.template:
-    src: templates/{{ service_manager }}.j2
+    src: templates/tomcat_service.j2
     dest: "/etc/systemd/system/tomcat.service"
     owner: root
     group: root
-    mode: "{{ service_file_mode }}"
+    mode: "0644"
 
 - name: Ensure service is disabled
   ansible.builtin.service:
     name: tomcat.service
     enabled: no
-
-- name: Enable crontab for FES user
-  lineinfile:
-    dest: "/etc/cron.allow"
-    line: "fes"
-    regexp: "^fes"
 
 - name: Copy deployment scripts to server for later use
   copy:

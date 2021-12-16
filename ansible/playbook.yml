@@ -3,6 +3,5 @@
   become: true
   gather_facts: yes
   roles:
-    - ch_collections.base.nagios_nrpe_client
-    - ch_collections.heritage_services.nfs
+    # - ch_collections.base.nagios_nrpe_client
     - fes-app-config

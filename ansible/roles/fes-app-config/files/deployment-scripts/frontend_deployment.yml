@@ -24,10 +24,10 @@
    #       dest: "/tmp/{{ application_name }}-{{ version }}.zip"
    #       mode: get
 
-      - name: Create temporary app folder for unzip
-        file:
-          path: "/tmp/{{ application_name }}-{{ version }}"
-          state: directory
+   #   - name: Create temporary app folder for unzip
+   #     file:
+   #       path: "/tmp/{{ application_name }}-{{ version }}"
+   #       state: directory
 
       - name: Make sure config directory exists
         file:

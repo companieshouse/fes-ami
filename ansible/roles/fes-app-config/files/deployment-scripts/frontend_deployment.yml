@@ -6,10 +6,9 @@
       - ch_collections.base
     vars:
       application_name: "fes"
+      application_component: "fes-control"
       home_dir: "/home/fes"
-      directories:
-        - "data"
-        - "supportscripts"
+      app_dir: "/opt/tomcat/latest/webapps"
       config_files:
         - "FES"
     roles:
@@ -17,36 +16,30 @@
       - name: ch_collections.base.cloudwatch_agent_config
         when: cw_log_files is defined
     tasks:
-   #   - name: Download the versioned release artifact from S3
-   #     aws_s3:
-   #       bucket: "{{ s3_bucket_releases }}"
-   #       object: "chl-perl/{{ application_name }}/{{ application_name }}-{{ version }}.zip"
-   #       dest: "/tmp/{{ application_name }}-{{ version }}.zip"
-   #       mode: get
+      - name: Download the versioned release artifact from S3
+        aws_s3:
+          bucket: "{{ s3_bucket_releases }}"
+          object: "chl-fes/{{ application_component }}-{{ version }}.tar.gz"
+          dest: "/tmp/{{ application_component }}-{{ version }}.tar.gz"
+          mode: get
 
-   #   - name: Create temporary app folder for unzip
-   #     file:
-   #       path: "/tmp/{{ application_name }}-{{ version }}"
-   #       state: directory
-
-      - name: Make sure config directory exists
-        file:
-          path: "{{ home_dir }}/config/My"
-          state: directory
-          recurse: yes
-          mode: '0755'
-
+      - name: unarchive application file
+        ansible.builtin.unarchive:
+          src: "/tmp/{{ application_component }}-{{ version }}.tar.gz"
+          dest: "{{ app_dir }}/"
+          remote_src: yes
+      
       - name: Download environment config files from S3
         aws_s3:
           bucket: "{{ s3_bucket_configs }}"
           object: "chl-{{ application_name }}-configs/{{ heritage_environment }}/{{ item | upper }}.properties"
-          dest: "{{ home_dir }}/config/My/{{ item | upper }}.properties"
+          dest: "{{ app_dir }}/{{ item | upper }}.properties"
           mode: get
         loop: "{{ config_files }}"
 
       - name: Change config owners and permission
         ansible.builtin.file:
-          path: "{{ home_dir }}/config/My/{{ item | upper }}.properties"
+          path: "{{ app_dir }}/{{ item | upper }}.properties"
           owner: "{{ home_dir | basename }}"
           group: chlservices
           mode: '0755'

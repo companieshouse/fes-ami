@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     inventory:
-      - name: fes-frontend
+      - name: fes-app
         # image: "centos:centos6.10"
         image: geerlingguy/docker-amazonlinux2-ansible
         # The network setting allows for idempotent testing.

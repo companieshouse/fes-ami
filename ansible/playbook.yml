@@ -1,5 +1,5 @@
 ---
-- hosts: fes-frontend
+- hosts: fes-app
   become: true
   gather_facts: yes
   roles:

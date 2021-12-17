@@ -3,16 +3,17 @@ users:
   - name: fes
     group: chlservices
     gid: 600
+  - name: tomcat
+    group: tomcat
+    shell: /bin/false
+    home: /opt/tomcat/
 
 app_user_home_path: /home/fes
 
-# Custom env vars to append to role defaults (heritage_frontend_base)
-# Any env vars that have matching keys (names) will override the default
-# e.g. in the below LC_ALL will override the default in the role
-custom_env_vars:
-    LC_ALL: export LC_ALL='en_GB.UTF-8'
-    NLS_LANG: export NLS_LANG='ENGLISH_UNITED KINGDOM.UTF8'
-  
+package_installs:
+  - "java-1.8.0-openjdk"
+  - "tar"
+
 ## Nagios Variables
 auto_register_client: true
 nagios_host: nagios.sharedservices.aws.internal

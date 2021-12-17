@@ -4,26 +4,38 @@
     name: ['boto', 'boto3', 'botocore']
     umask: "0022"
 
+- name: Create user groups
+  ansible.builtin.group:
+    name: '{{ item.group | default(omit) }}'
+    gid: '{{ item.gid | default(omit) }}'
+    state: present
+  with_items: '{{ users }}'
+
 - name: Create users
   ansible.builtin.user:
-    name: "{{ item }}"
+    name: "{{ item.name }}"
+    groups: "{{ item.group | default(omit) }}"
+    create_home: "{{ item.create_home | default('yes') }}"
+    shell: "{{ item.shell | default(omit) }}"
     state: present
-  loop:
-    - tomcat
-    - fes
+  loop: "{{ users }}"
 
 - name: Install dependancies
   yum:
     name: "{{ item }}"
     state: present
-  loop: 
-    - "java-1.8.0-openjdk"
-    - "tar"
+  loop: "{{ package_installs }}"
 
 - name: Download tomcat
   ansible.builtin.get_url: 
     url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
     dest: "/tmp"
+
+- name: Create tomcat directory
+  ansible.builtin.file:
+    path: "{{ tomcat_path }}"
+    state: directory
+    mode: '0755'    
 
 - name: Unarchive tomcat
   ansible.builtin.unarchive:
@@ -35,17 +47,17 @@
 
 - name: Create Symlinks
   ansible.builtin.file:
-    src: "{{ tomcat_path }}apache-tomcat-{{ tomcat_version }}"
-    dest: "{{ tomcat_path }}tomcat{{ item }}"
+    src: "{{ tomcat_path }}/apache-tomcat-{{ tomcat_version }}"
+    dest: "{{ tomcat_path }}/{{ item }}"
     state: link
     owner: tomcat
     group: tomcat
   loop: 
-    - ""
-    - "-latest"
-    - "{{ tomcat_version.split('.')[0] }}"
-    - "-{{ tomcat_version }}"
-
+    - "tomcat"
+    - "latest"
+    - "tomcat-latest"
+    - "tomcat-{{ tomcat_version.split('.')[0] }}"
+    
 - name: Template service file
   ansible.builtin.template:
     src: templates/tomcat_service.j2

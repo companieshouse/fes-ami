@@ -60,7 +60,7 @@
     
 - name: Remove examples 
   ansible.builtin.file:
-    path: "{{ tomcat_path }}/apache-tomcat-{{ tomcat_version }}/examples"
+    path: "{{ tomcat_path }}/apache-tomcat-{{ tomcat_version }}/webapps/examples/"
     state: absent
     
 - name: Template service file

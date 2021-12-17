@@ -58,6 +58,11 @@
     - "tomcat-latest"
     - "tomcat-{{ tomcat_version.split('.')[0] }}"
     
+- name: Remove examples 
+  ansible.builtin.file:
+    path: "{{ tomcat_path }}/apache-tomcat-{{ tomcat_version }}/examples"
+    state: absent
+    
 - name: Template service file
   ansible.builtin.template:
     src: templates/tomcat_service.j2

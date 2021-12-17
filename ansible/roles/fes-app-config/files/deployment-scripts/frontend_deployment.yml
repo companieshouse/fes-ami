@@ -27,6 +27,8 @@
         ansible.builtin.unarchive:
           src: "/tmp/{{ application_component }}-{{ version }}.tar.gz"
           dest: "{{ app_dir }}/"
+          owner: tomcat
+          group: tomcat
           remote_src: yes
       
       - name: Download environment config files from S3
@@ -40,8 +42,8 @@
       - name: Change config owners and permission
         ansible.builtin.file:
           path: "{{ app_dir }}/{{ item | upper }}.properties"
-          owner: "{{ home_dir | basename }}"
-          group: chlservices
+          owner: tomcat
+          group: tomcat
           mode: '0755'
         loop: "{{ config_files }}"
         

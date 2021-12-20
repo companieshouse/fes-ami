@@ -47,3 +47,8 @@
           mode: '0755'
         loop: "{{ config_files }}"
         
+      - name: Ensure Tomcat service is enabled
+        ansible.builtin.service:
+          name: tomcat.service
+          state: started
+          enabled: yes

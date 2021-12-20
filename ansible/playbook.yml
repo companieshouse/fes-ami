@@ -5,3 +5,4 @@
   roles:
     # - ch_collections.base.nagios_nrpe_client
     - fes-app-config
+    - ch_collections.heritage_services.nfs

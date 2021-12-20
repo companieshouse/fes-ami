@@ -1,6 +1,7 @@
 ---
 - name: Get pre-requisites
   pip:
+    executable: "pip3"
     name: ['boto', 'boto3', 'botocore']
     umask: "0022"
 

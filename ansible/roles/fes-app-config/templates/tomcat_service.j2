@@ -12,8 +12,8 @@ Group=tomcat
 Environment="{{ value }}"
 {% endfor -%}
 
-ExecStart={{ tomcat_path }}/bin/startup.sh
-ExecStop={{ tomcat_path }}/bin/shutdown.sh
+ExecStart={{ tomcat_path }}/latest/bin/startup.sh
+ExecStop={{ tomcat_path }}/latest/bin/shutdown.sh
 
 [Install]
 WantedBy=multi-user.target

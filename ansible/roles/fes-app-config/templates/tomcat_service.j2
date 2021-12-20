@@ -1,0 +1,19 @@
+[Unit]
+Description=Tomcat
+After=network.target
+
+[Service]
+Type=forking
+
+User=tomcat
+Group=tomcat
+
+{% for value in tomcat_environment -%}
+Environment="{{ value }}"
+{% endfor -%}
+
+ExecStart={{ tomcat_path }}/bin/startup.sh
+ExecStop={{ tomcat_path }}/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target

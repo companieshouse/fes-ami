@@ -1,0 +1,98 @@
+---
+- name: Get pre-requisites
+  pip:
+    name: ['boto', 'boto3', 'botocore']
+    umask: "0022"
+
+- name: Create user groups
+  ansible.builtin.group:
+    name: '{{ item.group | default(omit) }}'
+    gid: '{{ item.gid | default(omit) }}'
+    state: present
+  with_items: '{{ users }}'
+
+- name: Create users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    groups: "{{ item.group | default(omit) }}"
+    create_home: "{{ item.create_home | default('yes') }}"
+    shell: "{{ item.shell | default(omit) }}"
+    state: present
+  loop: "{{ users }}"
+
+- name: Install dependancies
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ package_installs }}"
+
+- name: Download tomcat
+  ansible.builtin.get_url: 
+    url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    dest: "/tmp"
+
+- name: Create tomcat directory
+  ansible.builtin.file:
+    path: "{{ tomcat_path }}"
+    state: directory
+    mode: '0755'    
+
+- name: Unarchive tomcat
+  ansible.builtin.unarchive:
+    src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    dest: "{{ tomcat_path }}"
+    remote_src: yes
+    owner: tomcat
+    group: tomcat
+
+- name: Create Symlinks
+  ansible.builtin.file:
+    src: "{{ tomcat_path }}/apache-tomcat-{{ tomcat_version }}"
+    dest: "{{ tomcat_path }}/{{ item }}"
+    state: link
+    owner: tomcat
+    group: tomcat
+  loop: 
+    - "tomcat"
+    - "latest"
+    - "tomcat-latest"
+    - "tomcat-{{ tomcat_version.split('.')[0] }}"
+    
+- name: Remove examples 
+  ansible.builtin.file:
+    path: "{{ tomcat_path }}/apache-tomcat-{{ tomcat_version }}/webapps/examples/"
+    state: absent
+    
+- name: Template service file
+  ansible.builtin.template:
+    src: templates/tomcat_service.j2
+    dest: "/etc/systemd/system/tomcat.service"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure service is disabled
+  ansible.builtin.service:
+    name: tomcat.service
+    enabled: no
+
+- name: Copy deployment scripts to server for later use
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ansible_deploy_playbook_directory }}/{{ item | basename }}"
+    mode: 0755
+  loop:
+    - deployment-scripts/frontend_deployment.yml
+
+- name: Setup deployment playbook dependancies (1/2)
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ansible_deploy_playbook_directory }}/"
+    mode: 0755
+  loop: 
+    - requirements.yml
+
+- name: Setup deployment playbook dependancies (2/2)
+  command: "/usr/local/bin/ansible-galaxy install -f -r {{ansible_deploy_playbook_directory}}/requirements.yml"
+  register: requirements_output
+  changed_when: '"was installed successfully" in requirements_output.stdout'

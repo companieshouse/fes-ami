@@ -1,0 +1,21 @@
+---
+- name: Deploy Centos6.10 Container
+  hosts: localhost
+  gather_facts: false
+  vars:
+    inventory:
+      - name: fes-app
+        # image: "centos:centos6.10"
+        image: geerlingguy/docker-amazonlinux2-ansible
+        # The network setting allows for idempotent testing.
+        # without it the role creates a brand new container, with it the container is re-used.
+        network_mode: bridge
+        provision_docker_volumes: 
+          - /lib/modules:/lib/modules   
+  roles:
+    - role: provision_docker
+      provision_docker_inventory: "{{ inventory }}"
+      provision_docker_privileged: True
+
+- import_playbook: ../playbook.yml
+

@@ -1,0 +1,57 @@
+---
+users:
+  - name: fes
+    group: chlservices
+    gid: 600
+  - name: tomcat
+    group: tomcat
+    shell: /bin/false
+    home: /opt/tomcat/
+
+app_user_home_path: /home/fes
+
+package_installs:
+  - "java-1.8.0-openjdk"
+  - "tar"
+
+## Nagios Variables
+auto_register_client: true
+nagios_host: nagios.sharedservices.aws.internal
+server_template_name: !unsafe "{{ REPLACE }}" ## Gets replaced at Terraform level via userdata
+nrpe_allowed_hosts:
+  - "127.0.0.1"
+  - "10.44.12.0/24"
+  - "10.44.13.0/24"
+  - "10.44.14.0/24"
+nrpe_plugin_packages:
+  - nagios-plugins-nrpe
+  - nagios-plugins
+  - nagios-plugins-disk
+nrpe_config:
+  dont_blame_nrpe: 1
+nrpe_command:
+  check_disk:
+    script: check_disk
+    option: $ARG1$
+  check_load:
+    script: check_load
+    option: $ARG1$
+  check_sshd:
+    sudo: true
+    script: check_service.sh
+    option: $ARG1$
+  check_crond:
+    sudo: true
+    script: check_service.sh
+    option: $ARG1$
+  check_httpd:
+    sudo: true
+    script: check_service.sh
+    option: $ARG1$
+  check_syslogd:
+    sudo: true
+    script: check_service.sh
+    option: $ARG1$
+  check_users:
+    script: check_users
+    option: $ARG1$

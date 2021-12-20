@@ -1,0 +1,49 @@
+---
+  - name: Deploy FES artifact
+    hosts: localhost
+    gather_facts: true
+    collections:
+      - ch_collections.base
+    vars:
+      application_name: "fes"
+      application_component: "fes-control"
+      home_dir: "/home/fes"
+      app_dir: "/opt/tomcat/latest/webapps"
+      config_files:
+        - "FES"
+    roles:
+      - { role: /root/roles/nfs_mounts }
+      - name: ch_collections.base.cloudwatch_agent_config
+        when: cw_log_files is defined
+    tasks:
+      - name: Download the versioned release artifact from S3
+        aws_s3:
+          bucket: "{{ s3_bucket_releases }}"
+          object: "chl-fes/{{ application_component }}-{{ version }}.tar.gz"
+          dest: "/tmp/{{ application_component }}-{{ version }}.tar.gz"
+          mode: get
+
+      - name: unarchive application file
+        ansible.builtin.unarchive:
+          src: "/tmp/{{ application_component }}-{{ version }}.tar.gz"
+          dest: "{{ app_dir }}/"
+          owner: tomcat
+          group: tomcat
+          remote_src: yes
+      
+      - name: Download environment config files from S3
+        aws_s3:
+          bucket: "{{ s3_bucket_configs }}"
+          object: "chl-{{ application_name }}-configs/{{ heritage_environment }}/{{ item | upper }}.properties"
+          dest: "{{ app_dir }}/{{ item | upper }}.properties"
+          mode: get
+        loop: "{{ config_files }}"
+
+      - name: Change config owners and permission
+        ansible.builtin.file:
+          path: "{{ app_dir }}/{{ item | upper }}.properties"
+          owner: tomcat
+          group: tomcat
+          mode: '0755'
+        loop: "{{ config_files }}"
+        

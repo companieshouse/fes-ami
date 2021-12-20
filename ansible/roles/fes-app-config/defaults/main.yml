@@ -1,0 +1,15 @@
+---
+s3_bucket: ""
+
+ansible_deploy_playbook_directory: "/root"
+
+tomcat_version: "9.0.56"
+tomcat_path: "/opt/tomcat"
+
+tomcat_environment: 
+  - "JAVA_HOME=/usr/lib/jvm/jre"
+  - "JAVA_OPTS=-Djava.security.egd=file:///dev/urandom"
+  - "CATALINA_BASE={{ tomcat_path }}/latest"
+  - "CATALINA_HOME={{ tomcat_path }}/latest"
+  - "CATALINA_PID={{ tomcat_path }}/latest/temp/tomcat.pid"
+  - "CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC" #Set this for actual memory

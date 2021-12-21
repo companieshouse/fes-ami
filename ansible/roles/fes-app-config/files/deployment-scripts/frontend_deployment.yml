@@ -52,3 +52,12 @@
           name: tomcat.service
           state: started
           enabled: yes
+      
+      - name: Add environment variables
+        lineinfile: dest=/home/fes/.profile line="export CATALINA_OPTS=-Xms1024M -Xmx3072M -server -XX:+UseParallelGC #Set this for actual memory"
+      
+      - name: Add environment variables
+        lineinfile: dest=/home/fes/.profile line="export PROPERTIES_FILE={{ tomcat_path }}/latest/webapps/FES.properties"
+
+      - name: Source profile
+        shell: source /home/fes/.profile

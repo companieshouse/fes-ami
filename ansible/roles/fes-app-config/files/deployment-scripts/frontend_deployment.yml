@@ -52,4 +52,11 @@
           name: tomcat.service
           state: started
           enabled: yes
-      
+
+      - name: Template users file
+        ansible.builtin.template:
+          src: "/opt/tomcat/apache-tomcat-9.0.56/conf/tomcat-users.j2"
+          dest: "/opt/tomcat/apache-tomcat-9.0.56/conf/tomcat-users.xml"
+          owner: tomcat
+          group: tomcat
+          mode: "0600"

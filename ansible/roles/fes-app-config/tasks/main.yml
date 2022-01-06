@@ -71,6 +71,20 @@
     owner: root
     group: root
     mode: "0644"
+- name: Template users file
+  ansible.builtin.template:
+    src: templates/tomcat_users.j2
+    dest: "/opt/tomcat/apache-tomcat-9.0.56/conf/tomcat-users.xml"
+    owner: tomcat
+    group: tomcat
+    mode: "0600"
+- name: Copy context file
+  copy:
+    src: files/context.xml
+    dest: "/opt/tomcat/apache-tomcat-9.0.56/webapps/manager/META-INF/context.xml"
+    owner: tomcat
+    group: tomcat
+    mode: 0640
 
 - name: Ensure service is disabled
   ansible.builtin.service:

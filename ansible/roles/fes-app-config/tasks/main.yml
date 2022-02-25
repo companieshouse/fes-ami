@@ -29,7 +29,7 @@
 
 - name: Install CA cert
   copy:
-    source: chca.pem
+    src: files/chca.pem
     dest: /etc/pki/ca-trust/source/anchors/chca.pem
     owner: root
     group: root

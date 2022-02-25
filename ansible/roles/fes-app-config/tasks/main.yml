@@ -35,6 +35,9 @@
     group: root
     mode: 0644
 
+- name: Update trust
+    shell: /bin/update-ca-trust enable
+
 - name: Download tomcat
   ansible.builtin.get_url: 
     url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"

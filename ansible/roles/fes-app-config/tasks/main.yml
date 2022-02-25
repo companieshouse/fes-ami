@@ -27,6 +27,14 @@
     state: present
   loop: "{{ package_installs }}"
 
+-name: Install CA cert
+  copy:
+    source: chca.pem
+    dest: /etc/pki/ca-trust/source/anchors/chca.pem
+    owner: root
+    group: root
+    mode: 0644
+
 - name: Download tomcat
   ansible.builtin.get_url: 
     url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"

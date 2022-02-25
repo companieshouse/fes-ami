@@ -27,7 +27,7 @@
     state: present
   loop: "{{ package_installs }}"
 
--name: Install CA cert
+- name: Install CA cert
   copy:
     source: chca.pem
     dest: /etc/pki/ca-trust/source/anchors/chca.pem

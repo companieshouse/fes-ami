@@ -109,3 +109,4 @@
   command: "/usr/local/bin/ansible-galaxy install -f -r {{ansible_deploy_playbook_directory}}/requirements.yml"
   register: requirements_output
   changed_when: '"was installed successfully" in requirements_output.stdout'
+

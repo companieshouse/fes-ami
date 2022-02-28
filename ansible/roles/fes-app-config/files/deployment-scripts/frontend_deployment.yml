@@ -1,31 +1,11 @@
----
-  - name: CA Certs
-    hosts: localhost
-    gather_facts: true
-    vars:
-      cert_name: "chca"
-    tasks:
-      - name: Download the cert artifact from S3
-        aws_s3:
-          bucket: "{{ s3_bucket_releases }}"
-          object: "chl-fes/{{ cert_name }}.pem"
-          dest: "/etc/pki/ca-trust/source/anchors/{{ cert_name }}.pem"
-          mode: get
-
-      - name: Update trust
-        shell: /usr/bin/update-ca-trust
-      
-      - name: Force systemd to read all configs
-        systemd:
-          daemon_reload: yes
-      
-
+---   
   - name: Deploy FES artifact
     hosts: localhost
     gather_facts: true
     collections:
       - ch_collections.base
     vars:
+      cert_name: "chca"
       application_name: "fes"
       application_component: "fes-control"
       home_dir: "/home/fes"
@@ -36,7 +16,23 @@
       - { role: /root/roles/nfs_mounts }
       - name: ch_collections.base.cloudwatch_agent_config
         when: cw_log_files is defined
+    
     tasks:
+      - name: Download the cert artifact from S3
+        aws_s3:
+          bucket: "{{ s3_bucket_resources }}"
+          object: "chl-fes/{{ cert_name }}.pem"
+          dest: "/etc/pki/ca-trust/source/anchors/{{ cert_name }}.pem"
+          mode: get
+
+      - name: Update trust
+        command: update-ca-trust
+        notify: Reload systemd
+      
+      - name: Force systemd to read all configs
+        systemd:
+          daemon_reload: yes
+
       - name: Download the versioned release artifact from S3
         aws_s3:
           bucket: "{{ s3_bucket_releases }}"
@@ -74,3 +70,7 @@
           state: started
           enabled: yes
       
+    handlers:
+      - name: Reload systemd
+        systemd:
+          daemon_reload: yes

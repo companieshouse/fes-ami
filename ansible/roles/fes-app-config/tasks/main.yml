@@ -37,7 +37,7 @@
     mode: get
 
 - name: Update trust
-    shell: /bin/update-ca-trust enable
+    shell: /usr/bin/update-ca-trust
 
 - name: Download tomcat
   ansible.builtin.get_url: 

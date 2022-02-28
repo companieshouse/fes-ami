@@ -29,10 +29,6 @@
         command: update-ca-trust
         notify: Reload systemd
       
-      - name: Force systemd to read all configs
-        systemd:
-          daemon_reload: yes
-
       - name: Download the versioned release artifact from S3
         aws_s3:
           bucket: "{{ s3_bucket_releases }}"

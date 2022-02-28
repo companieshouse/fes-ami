@@ -27,18 +27,6 @@
     state: present
   loop: "{{ package_installs }}"
 
-- name: Download the cert artifact from S3
-  vars:
-    cert_name: "chca"
-  aws_s3:
-    bucket: "{{ s3_bucket_releases }}"
-    object: "chl-fes/{{ cert_name }}.pem"
-    dest: "/etc/pki/ca-trust/source/anchors/{{ cert_name }}.pem"
-    mode: get
-
-- name: Update trust
-  shell: /usr/bin/update-ca-trust
-
 - name: Download tomcat
   ansible.builtin.get_url: 
     url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"

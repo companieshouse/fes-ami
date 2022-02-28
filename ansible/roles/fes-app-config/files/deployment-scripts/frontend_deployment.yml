@@ -1,4 +1,25 @@
 ---
+  - name: CA Certs
+    hosts: localhost
+    gather_facts: true
+    vars:
+      cert_name: "chca"
+    tasks:
+      - name: Download the cert artifact from S3
+        aws_s3:
+          bucket: "{{ s3_bucket_releases }}"
+          object: "chl-fes/{{ cert_name }}.pem"
+          dest: "/etc/pki/ca-trust/source/anchors/{{ cert_name }}.pem"
+          mode: get
+
+      - name: Update trust
+        shell: /usr/bin/update-ca-trust
+      
+      - name: Force systemd to read all configs
+        systemd:
+          daemon_reload: yes
+      
+
   - name: Deploy FES artifact
     hosts: localhost
     gather_facts: true

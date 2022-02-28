@@ -33,8 +33,17 @@
   aws_s3:
     bucket: "{{ s3_bucket_releases }}"
     object: "chl-fes/{{ cert_name }}.pem"
-    dest: "/etc/pki/ca-trust/source/anchors/{{ cert_name }}.pem"
+    dest: "/tmp/{{ cert_name }}.pem"
     mode: get
+
+- name: Move cert and change perms
+  vars:
+    cert_name: "chca"
+  copy:
+    remote_src: yes
+    src: "/tmp/{{ cert_name }}.pem"
+    dest: "/etc/pki/ca-trust/source/anchors/{{ cert_name }}.pem"
+    mode: 0400
 
 - name: Update trust
     shell: /usr/bin/update-ca-trust

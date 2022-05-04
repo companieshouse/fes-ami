@@ -7,10 +7,10 @@ tomcat_version: "9.0.62"
 tomcat_path: "/opt/tomcat"
 
 tomcat_environment: 
-  - "JAVA_HOME=/usr/lib/jvm/jre"
-  - "JAVA_OPTS=-Djava.security.egd=file:///dev/urandom -Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true -Xms8192m -Xmx8192m"
+  - "JAVA_HOME=/usr/java/jdk1.8.0_172-amd64/jre"
+  - "JAVA_OPTS=-Djava.security.egd=file:///dev/urandom -Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true"
   - "CATALINA_BASE={{ tomcat_path }}/latest"
   - "CATALINA_HOME={{ tomcat_path }}/latest"
   - "CATALINA_PID={{ tomcat_path }}/latest/temp/tomcat.pid"
-  - "CATALINA_OPTS=-Xms1024M -Xmx3072M -server -XX:+UseParallelGC" #Set this for actual memory
+  - "CATALINA_OPTS=-Xms8192m -Xmx8192m -server -XX:+UseParallelGC" #Set this for actual memory
   - "PROPERTIES_FILE={{ tomcat_path }}/latest/webapps/FES.properties"

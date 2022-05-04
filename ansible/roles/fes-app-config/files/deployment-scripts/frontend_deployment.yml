@@ -25,10 +25,19 @@
           dest: "/etc/pki/ca-trust/source/anchors/{{ cert_name }}.pem"
           mode: get
 
-      - name: Update trust
-        command: update-ca-trust
-        notify: Reload systemd
-      
+      - name: Check the version and location of Java install
+        shell: dirname $(dirname $(readlink -f $(which javac)))
+        register: java_location
+
+      - name: Import CH cert into Oracle JDK Keystore
+        community.general.java_cert:
+          cert_path: /etc/pki/ca-trust/source/anchors/{{ cert_name }}.pem
+          keystore_path: "{{ java_location.stdout }}/jre/lib/security/cacerts"
+          keystore_pass: changeit
+          state: present
+          cert_alias: chca
+          trust_cacert: True
+
       - name: Download the versioned release artifact from S3
         aws_s3:
           bucket: "{{ s3_bucket_releases }}"

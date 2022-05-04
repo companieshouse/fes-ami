@@ -6,6 +6,8 @@
     umask: "0022"
 
 - name: Download JDK installer from S3
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   amazon.aws.aws_s3:
     bucket: "{{ aws_s3_resource_bucket }}"
     object: "oracle/jdk/jdk-8u172-linux-x64.rpm"
@@ -14,6 +16,7 @@
     overwrite: different
     aws_access_key: "{{ aws_s3_resource_bucket_access_key | default(omit) }}"
     aws_secret_key: "{{ aws_s3_resource_bucket_secret_key | default(omit) }}"
+
 
 - name: install Oracle JDK 
   package:

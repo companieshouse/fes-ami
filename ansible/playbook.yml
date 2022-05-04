@@ -2,8 +2,6 @@
 - hosts: fes-app
   become: true
   gather_facts: yes
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
   roles:
     - ch_collections.heritage_services.nfs
     - fes-app-config

@@ -50,11 +50,6 @@ variable "aws_subnet_filter_name" {
   description = "The subnet filter string. Any filter described by the DescribeSubnets API documentation is valid. If multiple subnets match then the one with the most IPv4 addresses free will be used"
 }
 
-variable "aws_s3_release_bucket" {
-  type        = string
-  description = "Bucket that contains any artifacts required to complete the build process, will be passed to Ansible"
-}
-
 variable "playbook_file_path" {
   type        = string
   default     = "../ansible/playbook.yml"
@@ -97,8 +92,19 @@ variable "kms_key_id" {
   description = "KMS key ID, arn or alias to use for root volume encryption in the main region. If encrypt_boot is true and this is left null, the AWS default key is used"
 }
 
-variable "nagios_api_key" {
+variable "aws_s3_resource_bucket" {
   type        = string
+  description = "Bucket that contains any artifacts required to complete the build process, will be passed to Ansible"
+}
+
+variable "aws_s3_resource_bucket_access_key" {
+  type        = string
+  description = "The AWS Access Key that allows access to the resource bucket"
   default     = ""
-  description = "This key will be supplied to the Nagios agent Ansible role to populate jinja templates"
+}
+
+variable "aws_s3_resource_bucket_secret_key" {
+  type        = string
+  description = "The AWS Secret Key that allows access to the resource bucket"
+  default     = ""
 }

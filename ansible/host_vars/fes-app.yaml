@@ -11,7 +11,6 @@ users:
 app_user_home_path: /home/fes
 
 package_installs:
-  - "java-1.8.0-openjdk"
   - "tar"
 
 ## Nagios Variables

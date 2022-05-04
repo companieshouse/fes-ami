@@ -5,6 +5,18 @@
     name: ['boto', 'boto3', 'botocore']
     umask: "0022"
 
+- name: Download Java installer from S3
+  aws_s3:
+    bucket: "{{ s3_bucket_resources }}"
+    object: "oracle/jdk/jdk-8u172-linux-x64.rpm"
+    dest: "/tmp/jdk-8u172-linux-x64.rpm"
+    mode: get
+
+- name: install Oracle JDK 
+  package:
+    name: "/tmp/jdk-8u172-linux-x64.rpm"
+    state: present
+
 - name: Create user groups
   ansible.builtin.group:
     name: '{{ item.group | default(omit) }}'

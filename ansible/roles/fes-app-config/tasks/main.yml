@@ -5,6 +5,10 @@
     name: ['boto', 'boto3', 'botocore']
     umask: "0022"
 
+- name: Set timezone to Europe/London
+  timezone:
+    name: Europe/London
+
 - name: Download JDK installer from S3
   vars:
     ansible_python_interpreter: /usr/bin/python3

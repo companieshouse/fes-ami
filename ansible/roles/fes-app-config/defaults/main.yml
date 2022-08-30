@@ -14,3 +14,4 @@ tomcat_environment:
   - "CATALINA_PID={{ tomcat_path }}/latest/temp/tomcat.pid"
   - "CATALINA_OPTS=-Xms8192m -Xmx8192m -server -XX:+UseParallelGC" #Set this for actual memory
   - "PROPERTIES_FILE={{ tomcat_path }}/latest/webapps/FES.properties"
+  - "TZ=Europe/London"

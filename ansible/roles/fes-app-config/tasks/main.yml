@@ -55,6 +55,19 @@
     state: present
   loop: "{{ package_installs }}"
 
+- name: Download ch fonts
+  ansible.builtin.get_url: 
+    url: "http://repository.aws.chdev.org:8081/artifactory/local-ch-release/uk/gov/companieshouse/chips-fop-fonts/1.0.1/chips-fop-fonts-1.0.1.tar"
+    dest: "/usr/share"
+
+- name: Unarchive ch fonts
+  ansible.builtin.unarchive:
+    src: "/usr/share/chips-fop-fonts-1.0.1.tar"
+    dest: "/usr/share"
+    remote_src: yes
+    owner: root
+    group: root
+
 - name: Download tomcat
   ansible.builtin.get_url: 
     url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"

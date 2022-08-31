@@ -5,6 +5,17 @@
     name: ['boto', 'boto3', 'botocore']
     umask: "0022"
 
+- name: Link /etc/localtime to Europe/London timezone
+  ansible.builtin.file:
+    src: /usr/share/zoneinfo/Europe/London
+    dest: /etc/localtime
+    state: link
+    force: yes
+    
+- name: Set timezone to Europe/London
+  timezone:
+    name: Europe/London
+
 - name: Download JDK installer from S3
   vars:
     ansible_python_interpreter: /usr/bin/python3

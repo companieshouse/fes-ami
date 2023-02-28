@@ -3,8 +3,11 @@ s3_bucket: ""
 
 ansible_deploy_playbook_directory: "/root"
 
-tomcat_version: "9.0.65"
+tomcat_version: "9.0.72"
 tomcat_path: "/opt/tomcat"
+
+fonts_version: "1.0.1"
+fonts_path: "/usr/share"
 
 tomcat_environment: 
   - "JAVA_HOME=/usr/java/jdk1.8.0_172-amd64/jre"

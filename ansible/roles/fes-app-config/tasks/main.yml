@@ -55,16 +55,35 @@
     state: present
   loop: "{{ package_installs }}"
 
-- name: Unarchive ch fonts
+- name: Download fonts from S3
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  amazon.aws.aws_s3:
+    bucket: "{{ aws_s3_resource_bucket }}"
+    object: "chl-fes/fes-fonts-{{ fonts_version }}.tar"
+    dest: "/usr/share"
+    mode: get
+    overwrite: different
+    aws_access_key: "{{ aws_s3_resource_bucket_access_key | default(omit) }}"
+    aws_secret_key: "{{ aws_s3_resource_bucket_secret_key | default(omit) }}"
+
+- name: Unarchive fonts
   ansible.builtin.unarchive:
-    src: "http://repository.aws.chdev.org:8081/artifactory/local-ch-release/uk/gov/companieshouse/chips-fop-fonts/1.0.1/chips-fop-fonts-1.0.1.tar"
+    src: "/usr/share/fes-fonts-{{ fonts_version }}.tar"
     dest: "/usr/share"
     remote_src: yes
 
-- name: Download tomcat
-  ansible.builtin.get_url: 
-    url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+- name: Download tomcat from S3
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  amazon.aws.aws_s3:
+    bucket: "{{ aws_s3_resource_bucket }}"
+    object: "chl-fes/apache-tomcat-{{ tomcat_version }}.tar.gz"
     dest: "/tmp"
+    mode: get
+    overwrite: different
+    aws_access_key: "{{ aws_s3_resource_bucket_access_key | default(omit) }}"
+    aws_secret_key: "{{ aws_s3_resource_bucket_secret_key | default(omit) }}"
 
 - name: Create tomcat directory
   ansible.builtin.file:

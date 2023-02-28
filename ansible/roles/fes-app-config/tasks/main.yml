@@ -61,7 +61,7 @@
   amazon.aws.aws_s3:
     bucket: "{{ aws_s3_resource_bucket }}"
     object: "chl-fes/fes-fonts-{{ fonts_version }}.tar"
-    dest: "/usr/share"
+    dest: "{{ fonts_path }}"
     mode: get
     overwrite: different
     aws_access_key: "{{ aws_s3_resource_bucket_access_key | default(omit) }}"
@@ -70,7 +70,7 @@
 - name: Unarchive fonts
   ansible.builtin.unarchive:
     src: "/usr/share/fes-fonts-{{ fonts_version }}.tar"
-    dest: "/usr/share"
+    dest: "{{ fonts_path }}"
     remote_src: yes
 
 - name: Download tomcat from S3

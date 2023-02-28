@@ -69,7 +69,7 @@
 
 - name: Unarchive fonts
   ansible.builtin.unarchive:
-    src: "/usr/share/fes-fonts-{{ fonts_version }}.tar"
+    src: "{{ fonts_path }}/fes-fonts-{{ fonts_version }}.tar"
     dest: "{{ fonts_path }}"
     remote_src: yes
 

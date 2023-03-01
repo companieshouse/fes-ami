@@ -61,7 +61,7 @@
   amazon.aws.aws_s3:
     bucket: "{{ aws_s3_resource_bucket }}"
     object: "chl-fes/fes-fonts-{{ fonts_version }}.tar"
-    dest: "{{ fonts_path }}"
+    dest: "{{ fonts_path }}/fes-fonts-{{ fonts_version }}.tar"
     mode: get
     overwrite: different
     aws_access_key: "{{ aws_s3_resource_bucket_access_key | default(omit) }}"
@@ -79,7 +79,7 @@
   amazon.aws.aws_s3:
     bucket: "{{ aws_s3_resource_bucket }}"
     object: "chl-fes/apache-tomcat-{{ tomcat_version }}.tar.gz"
-    dest: "/tmp"
+    dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
     mode: get
     overwrite: different
     aws_access_key: "{{ aws_s3_resource_bucket_access_key | default(omit) }}"

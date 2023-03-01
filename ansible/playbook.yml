@@ -3,6 +3,5 @@
   become: true
   gather_facts: yes
   roles:
-    - ch_collections.heritage_services.nfs
     - fes-app-config
 

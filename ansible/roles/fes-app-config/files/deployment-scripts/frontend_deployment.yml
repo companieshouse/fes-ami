@@ -13,7 +13,6 @@
       config_files:
         - "FES"
     roles:
-      - { role: /root/roles/nfs_mounts }
       - name: ch_collections.base.cloudwatch_agent_config
         when: cw_log_files is defined
     

@@ -32,6 +32,7 @@
   package:
     name: "/tmp/jdk-8u172-linux-x64.rpm"
     state: present
+    lock_timeout: 60
 
 - name: Create user groups
   ansible.builtin.group:
@@ -53,6 +54,7 @@
   yum:
     name: "{{ item }}"
     state: present
+    lock_timeout: 60
   loop: "{{ package_installs }}"
 
 - name: Download fonts from S3

@@ -3,14 +3,14 @@ s3_bucket: ""
 
 ansible_deploy_playbook_directory: "/root"
 
-tomcat_version: "9.0.72"
+tomcat_version: "11.0.4"
 tomcat_path: "/opt/tomcat"
 
 fonts_version: "1.0.1"
 fonts_path: "/usr/share"
 
-tomcat_environment: 
-  - "JAVA_HOME=/usr/java/jdk1.8.0_172-amd64/jre"
+tomcat_environment:
+  - "JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto"
   - "JAVA_OPTS=-Djava.security.egd=file:///dev/urandom -Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true"
   - "CATALINA_BASE={{ tomcat_path }}/latest"
   - "CATALINA_HOME={{ tomcat_path }}/latest"

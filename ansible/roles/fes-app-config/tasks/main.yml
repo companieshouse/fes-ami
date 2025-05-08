@@ -16,6 +16,13 @@
   timezone:
     name: Europe/London
 
+- name: Add Amazon Corretto Yum repository
+  become: yes
+  get_url:
+    url: https://yum.corretto.aws/corretto.repo
+    dest: /etc/yum.repos.d/corretto.repo
+    mode: '0644'
+
 - name: Install Amazon Corretto 21 (full JDK including javac)
   become: yes
   yum:

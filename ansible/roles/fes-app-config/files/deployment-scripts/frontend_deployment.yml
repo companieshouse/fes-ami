@@ -31,7 +31,7 @@
       - name: Import CH cert into Oracle JDK Keystore
         community.general.java_cert:
           cert_path: /etc/pki/ca-trust/source/anchors/{{ cert_name }}.pem
-          keystore_path: "{{ java_location.stdout }}/jre/lib/security/cacerts"
+          keystore_path: "{{ java_location.stdout }}/lib/security/cacerts"
           keystore_pass: changeit
           state: present
           cert_alias: chca

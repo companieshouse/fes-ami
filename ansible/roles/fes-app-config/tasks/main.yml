@@ -16,23 +16,42 @@
   timezone:
     name: Europe/London
 
-- name: Download JDK installer from S3
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
-  amazon.aws.aws_s3:
-    bucket: "{{ aws_s3_resource_bucket }}"
-    object: "oracle/jdk/jdk-8u172-linux-x64.rpm"
-    dest: "/tmp/jdk-8u172-linux-x64.rpm"
-    mode: get
-    overwrite: different
-    aws_access_key: "{{ aws_s3_resource_bucket_access_key | default(omit) }}"
-    aws_secret_key: "{{ aws_s3_resource_bucket_secret_key | default(omit) }}"
-
-- name: install Oracle JDK 
-  package:
-    name: "/tmp/jdk-8u172-linux-x64.rpm"
+- name: Install Amazon Corretto 21 (full JDK including javac)
+  become: yes
+  yum:
+    name: java-21-amazon-corretto-devel
     state: present
     lock_timeout: 60
+
+- name: Set system-wide JAVA_HOME and update PATH
+  become: yes
+  copy:
+    dest: /etc/profile.d/java.sh
+    content: |
+      export JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto
+      export PATH=$JAVA_HOME/bin:$PATH
+    mode: '0755'
+
+- name: Verify Java installation
+  shell: java -version
+  register: java_version_output
+  changed_when: false
+  ignore_errors: yes
+
+- name: Show installed Java version
+  debug:
+    var: java_version_output.stdout_lines
+
+- name: Verify javac is available
+  become: yes
+  shell: which javac
+  register: javac_check
+  changed_when: false
+  failed_when: javac_check.rc != 0
+
+- name: Show javac path
+  debug:
+    msg: "javac found at: {{ javac_check.stdout }}"
 
 - name: Create user groups
   ansible.builtin.group:

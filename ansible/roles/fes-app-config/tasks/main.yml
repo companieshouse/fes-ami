@@ -47,7 +47,7 @@
 
 - name: Show installed Java version
   debug:
-    var: java_version_output.stdout_lines
+    msg: "{{ java_version_output.stderr_lines }}"
 
 - name: Verify javac is available
   become: yes

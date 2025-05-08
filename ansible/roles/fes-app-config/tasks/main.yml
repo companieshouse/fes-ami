@@ -16,10 +16,10 @@
   timezone:
     name: Europe/London
 
-- name: Install Amazon Corretto 21
+- name: Install Amazon Corretto 21 (full JDK including javac)
   become: yes
   yum:
-    name: java-21-amazon-corretto
+    name: java-21-amazon-corretto-devel
     state: present
     lock_timeout: 60
 
@@ -41,6 +41,17 @@
 - name: Show installed Java version
   debug:
     var: java_version_output.stdout_lines
+
+- name: Verify javac is available
+  become: yes
+  shell: which javac
+  register: javac_check
+  changed_when: false
+  failed_when: javac_check.rc != 0
+
+- name: Show javac path
+  debug:
+    msg: "javac found at: {{ javac_check.stdout }}"
 
 - name: Create user groups
   ansible.builtin.group:

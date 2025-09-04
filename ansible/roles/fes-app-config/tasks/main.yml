@@ -107,7 +107,7 @@
 - name: Unarchive fonts
   ansible.builtin.unarchive:
     src: "{{ fonts_path }}/fes-fonts-{{ fonts_version }}.tar"
-    dest: "{{ fonts_path }}/fonts"
+    dest: "{{ fonts_path }}"
     remote_src: yes
 
 - name: Refresh system font cache

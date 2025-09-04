@@ -83,6 +83,15 @@
     lock_timeout: 60
   loop: "{{ package_installs }}"
 
+- name: Install fontconfig and base fonts
+  yum:
+    name:
+      - fontconfig
+      - fonts-dejavu-core
+      - fonts-liberation
+    state: present
+    lock_timeout: 60
+
 - name: Download fonts from S3
   vars:
     ansible_python_interpreter: /usr/bin/python3
@@ -98,8 +107,11 @@
 - name: Unarchive fonts
   ansible.builtin.unarchive:
     src: "{{ fonts_path }}/fes-fonts-{{ fonts_version }}.tar"
-    dest: "{{ fonts_path }}"
+    dest: "{{ fonts_path }}/fonts"
     remote_src: yes
+
+- name: Refresh system font cache
+  command: fc-cache -fv
 
 - name: Download tomcat from S3
   vars:

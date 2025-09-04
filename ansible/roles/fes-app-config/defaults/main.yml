@@ -11,7 +11,7 @@ fonts_path: "/usr/share"
 
 tomcat_environment:
   - "JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto"
-  - "JAVA_OPTS=-Djava.security.egd=file:///dev/urandom -Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true"
+  - "JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:///dev/urandom -Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true"
   - "CATALINA_BASE={{ tomcat_path }}/latest"
   - "CATALINA_HOME={{ tomcat_path }}/latest"
   - "CATALINA_PID={{ tomcat_path }}/latest/temp/tomcat.pid"

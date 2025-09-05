@@ -83,6 +83,13 @@
     lock_timeout: 60
   loop: "{{ package_installs }}"
 
+- name: Install fontconfig and base fonts
+  yum:
+    name:
+      - fontconfig
+    state: present
+    lock_timeout: 60
+
 - name: Download fonts from S3
   vars:
     ansible_python_interpreter: /usr/bin/python3

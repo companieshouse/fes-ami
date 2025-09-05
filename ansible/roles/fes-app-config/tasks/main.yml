@@ -28,7 +28,7 @@
   yum:
     name: java-21-amazon-corretto-devel
     state: present
-    lock_timeout: 120
+    lock_timeout: 180
 
 - name: Set system-wide JAVA_HOME and update PATH
   become: yes
@@ -80,7 +80,7 @@
   yum:
     name: "{{ item }}"
     state: present
-    lock_timeout: 120
+    lock_timeout: 180
   loop: "{{ package_installs }}"
 
 - name: Install fontconfig and base fonts
@@ -88,7 +88,7 @@
     name:
       - fontconfig
     state: present
-    lock_timeout: 120
+    lock_timeout: 180
 
 - name: Download fonts from S3
   vars:

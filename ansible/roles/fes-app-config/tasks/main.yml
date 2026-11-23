@@ -1,4 +1,12 @@
 ---
+- name: Apply security updates 
+  become: yes
+  yum:
+    name: '*'
+    state: latest
+    security: yes
+    lock_timeout: 180
+
 - name: Get pre-requisites
   pip:
     executable: "pip3"

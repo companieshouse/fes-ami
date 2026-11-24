@@ -1,12 +1,4 @@
 ---
-- name: Apply security updates 
-  become: yes
-  yum:
-    name: '*'
-    state: latest
-    security: yes
-    lock_timeout: 180
-
 - name: Get pre-requisites
   pip:
     executable: "pip3"
@@ -30,6 +22,14 @@
     url: https://yum.corretto.aws/corretto.repo
     dest: /etc/yum.repos.d/corretto.repo
     mode: '0644'
+
+- name: Apply security updates 
+  become: yes
+  yum:
+    name: '*'
+    state: latest
+    security: yes
+    lock_timeout: 300
 
 - name: Install Amazon Corretto 21 (full JDK including javac)
   become: yes

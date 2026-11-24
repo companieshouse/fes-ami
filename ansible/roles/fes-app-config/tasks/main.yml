@@ -12,6 +12,9 @@
     state: latest
     security: yes
     lock_timeout: 300
+    exclude:
+      - jq
+      - oniguruma*
 
 - name: Get pre-requisites
   pip:
